@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Input from './../kit/Input'
 import Select from './../kit/Select'
+import Button from './../kit/Button'
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -23,33 +24,45 @@ class Login extends Component {
   handleInput = (e) =>  {
     this.setState({ select: e.target.value });
   }
+  handleFormSubmit(e) {
+    e.preventDefault();
+    let userData = this.state.newUser;
 
+    fetch("http://example.com", {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    }).then(response => {
+      response.json().then(data => {
+        console.log("Successful" + data);
+      });
+    });
+  }
   render() {
     return (
-      <div className="App">
+      <div className="login-wrapper">
+        <h1 className="login-title">Login</h1>
        <Input
           inputType={"email"}
-          name={"email"}
-          title={"email"}
+          className="wrap-input"
           value={this.state.email}
           placeholder={"Enter your email"}
           handleChange={this.handleChange}
         />
        <Input
           inputType={"password"}
-          name={"password"}
-          title={"password"}
+          className="wrap submit"
           value={this.state.password}
           placeholder={"Enter your password"}
           handleChange={this.handleChangePass}
         />
-         <Select
-          title={"Gender"}
-          name={"gender"}
-          options={this.state.options}
-          value={this.state.select}
-          placeholder={"Select Gender"}
-          handleChange={this.handleInput}
+         <Button
+          action={this.handleFormSubmit}
+          type={"primary"}
+          title={"Submit"}
         />
       </div>
     );

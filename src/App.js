@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
   BrowserRouter as Router,
@@ -8,23 +8,23 @@ import {
 
 import Login from './pages/Login';
 import Playlist from './pages/Playlist';
-import Home from './pages/Home';
 import Header from './components/Header';
 
-class App extends Component {
-  render() {
-    return (
-    <Router>
-        <div>
+function App() {
+  return (
+   
+  <Router>
       <Header />
+      <div className="main-wrap">
           <Switch>
-              <Route path='/login' component={Login} />
-              <Route path='/Playlist' component={Playlist} />
+              <Route path='/login' render={()=> <Login />} />
+              <Route path='/playlist' render={()=> <Playlist />} />
           </Switch>
-        </div>
+          </div>
       </Router>
+
+  
     );
-  }
 }
 
 export default App;
