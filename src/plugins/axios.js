@@ -1,28 +1,35 @@
 
 import Axios from 'axios';
+import Cookies from 'universal-cookie';
+import {userActions} from './../modules/action';
+import  configureStore  from './../modules/store';
+const cookies = new Cookies();
 
-export const axios = Axios.create({
+const axios = Axios.create({
   baseURL: 'http://localhost:4000/api'
 });
 
 axios.interceptors.request.use(
   config => {
-    config.headers.authorization = store.state.token;
+    config.headers.authorization = cookies.get('token');
     return config;
   }
 );
 
+
 axios.interceptors.response.use(
   async response => response.data,
+
+
   async error => {
     if (error.response) {
       const { status } = error.response;
-      if (status === 401) {
-        await store.dispatch('logout');
-      } else if (status === 419) {
-        return store.dispatch('refresh')
-          .then(() => axios.request(error.config));
-      }
+      // if (status === 401) {
+      //   await configureStore.dispatch()(userActions.refresh());
+      // } else if (status === 419) {
+      //   return configureStore.dispatch()(userActions.refresh)
+      //     .then(() => axios.request(error.config));
+      // }
     } else {
       throw new Error(error.message || 'error.network');
     }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Input from './../kit/Input'
-import Select from './../kit/Select'
-import Button from './../kit/Button'
+import Input from './../kit/Input';
+import Button from './../kit/Button';
+import {connect} from 'react-redux';
+import {userActions} from './../modules/action';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -9,11 +10,11 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
-      select: '',
-      options: [
-        '1', '2'
-      ]
     };
+  }
+  handleSubmit = event => {
+    event.preventDefault();
+    this.props.signin(this.state)
   }
   handleChange = (e) => {
     this.setState({ email: e.target.value });
@@ -21,30 +22,12 @@ class Login extends Component {
   handleChangePass = (e) => {
     this.setState({ password: e.target.value });
   }
-  handleInput = (e) =>  {
-    this.setState({ select: e.target.value });
-  }
-  handleFormSubmit(e) {
-    e.preventDefault();
-    let userData = this.state.newUser;
 
-    fetch("http://example.com", {
-      method: "POST",
-      body: JSON.stringify(userData),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(response => {
-      response.json().then(data => {
-        console.log("Successful" + data);
-      });
-    });
-  }
   render() {
     return (
       <div className="login-wrapper">
         <h1 className="login-title">Login</h1>
+        <form onSubmit={ this.handleSubmit }>
        <Input
           inputType={"email"}
           className="wrap-input"
@@ -60,13 +43,16 @@ class Login extends Component {
           handleChange={this.handleChangePass}
         />
          <Button
-          action={this.handleFormSubmit}
-          type={"primary"}
+          type={"submit"}
           title={"Submit"}
         />
+       </form>
       </div>
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  signin: userInfo => dispatch(userActions.signin(userInfo))
+})
 
-export default Login;
+export default connect(null, mapDispatchToProps)(Login);
