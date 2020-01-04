@@ -16,7 +16,7 @@ export const userActions = {
   signin,
   refresh,
   logout,
-  getAll,
+  getVendor,
 };
 function signin() {
   return dispatch => {
@@ -58,5 +58,23 @@ function getAll() {
   return { type: GETALL_SUCCESS }
 }
 
+function getVendor(){
+  return dispatch => {
+    api.albums.get()
+      .then((response)=>{
+        console.log(response);
+        dispatch(changeVendorsList(response));
+      }).catch((err)=>{
+      console.log("Error");
+      console.log(err);
+    })
+  };
+}
 
-
+export function changeVendorsList(vendor){
+  console.log(vendor)
+  return{
+    type: "GETALL_SUCCESS",
+    albums: vendor
+  }
+}

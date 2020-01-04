@@ -10,39 +10,37 @@ class Playlist extends Component {
 
   }
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getVendor();
 }
 
   render() {
-    const { user, users } = this.props;
-    console.log(user, users)
+    const albums = this.props;
+    console.log(Object.entries(albums))
     return (
       <div>
         <h1>Playlist</h1>
-        <div className="list-wrap">
-          <Card
+        <div className="list-wrap" >
+         {Object.entries(albums).map((card) =>
+
+            <Card
+              key={card.id}
             class={"list-element"}
-            image={
-              "https://consequenceofsound.net/wp-content/uploads/2013/07/jayz_magnacartaholygrail_608x608.jpg?quality=80&w=608"
-            }
-            title={"Jay Z"}
-            content={
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry."
-            }
-          />
+            image={card.image}
+            title={card.author}
+            content={card.description}
+            />
+          )}
+
         </div>
       </div>
     );
   }
 }
 function mapStateToProps(state) {
-  console.log(state)
-  const { users, authentication } = state;
-console.log(users, authentication )
-  return { users };
+  return state ;
 }
 
 const actionCreators = {
-  getUsers: userActions.getAll,
+  getVendor: userActions.getVendor,
 }
 export default connect(mapStateToProps, actionCreators)(Playlist);

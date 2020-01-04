@@ -1,14 +1,18 @@
-import {SET_LOGGED_IN, UNAUTHENTICATED, SET_LOGGED_OUT } from "./action";
-
-let user = localStorage.getItem('user');
+import {SET_LOGGED_IN, UNAUTHENTICATED, SET_LOGGED_OUT, GETALL_SUCCESS } from "./action";
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
+let user = cookies.get('token');
 const initialState = user ? { loggedIn: true, user } : {};
 export default function(state = {}, action) {
   switch(action.type) {
     case SET_LOGGED_IN:
-      console.log(state)
-      return { ...state, authenticated: true };
+
+      return { ...state, authentication: true };
     case SET_LOGGED_OUT:
       return {};
+      case GETALL_SUCCESS:
+        console.log(action.albums)
+        return action.albums;
     case UNAUTHENTICATED:
      return {};
   }

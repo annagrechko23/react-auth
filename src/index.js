@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import configureStore from "./modules/store";
 import { api } from './plugins/axios';
 
-const data = api.profile.get();
+const data = api.albums.get();
 let store = configureStore(data)
 console.log(configureStore(data))
 ReactDOM.render(
