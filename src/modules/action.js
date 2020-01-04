@@ -71,10 +71,10 @@ function getVendor(){
   };
 }
 
-export function changeVendorsList(vendor){
-  console.log(vendor)
+export function changeVendorsList(albums){
+  console.log(albums)
   return{
     type: "GETALL_SUCCESS",
-    albums: vendor
+    albums: albums
   }
 }

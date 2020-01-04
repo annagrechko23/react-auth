@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import Input from './../kit/Input';
 import Button from './../kit/Button';
 import {connect} from 'react-redux';
+import Cookies from 'universal-cookie';
+import { history } from './../modules/history';
+import { withRouter } from 'react-router-dom';
 import {userActions} from './../modules/action';
+const cookies = new Cookies();
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +16,14 @@ class Login extends Component {
       password: "",
     };
   }
-  handleSubmit = event => {
+    componentDidMount() {
+        console.log(this.props);
+        if(cookies.get('token')){
+            history.push('/playlist');
+        }
+    }
+
+    handleSubmit = event => {
     event.preventDefault();
     this.props.signin(this.state)
   }
@@ -55,4 +66,4 @@ const mapDispatchToProps = dispatch => ({
   signin: userInfo => dispatch(userActions.signin(userInfo))
 })
 
-export default connect(null, mapDispatchToProps)(Login);
+export default  withRouter(connect(null, mapDispatchToProps)(Login));

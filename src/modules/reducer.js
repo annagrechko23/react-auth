@@ -11,8 +11,10 @@ export default function(state = {}, action) {
     case SET_LOGGED_OUT:
       return {};
       case GETALL_SUCCESS:
-        console.log(action.albums)
-        return action.albums;
+        return {
+          ...state,
+          albums: action.albums
+        };
     case UNAUTHENTICATED:
      return {};
   }
