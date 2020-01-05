@@ -2,42 +2,41 @@ import React, { Component }  from "react";
 import { Link } from "react-router-dom";
 import { userActions }from './../modules/action';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-const mapStateToProps = (state) => {
-  console.log(state)
-  return { 
-    items: state,
-  }
-};
-const mapDispatchToProps = (dispatch) => {
-  return { 
-    logout: () => dispatch(userActions.logout()),
-  }
-};
+
 class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      items: [],
-      isLogged: true
-    }
+  componentDidMount() {
+    let { getProfile } = this.props;
+    getProfile();
   }
   logout = () => {
     let { logout } = this.props;
-    logout()
+    logout();
   };
   render() {
+    const { authentication } = this.props;
+    const { user } = this.props;
     return (
       <div>
         <ul className="navbar-nav mr-auto">
           <li >
-          {this.state.isLogged ? (
+          {authentication ? (
           <div  className="nav-link" onClick={this.logout} >Logout</div>
-      ) : (
-        <Link to="/login" className="nav-link">
-              login
-            </Link>
-      )}
+          ) : (
+            <Link to="/login" className="nav-link">
+                  login
+                </Link>
+          )}
+          </li>
+          <li>
+          {authentication ? (
+             <div  className="nav-link" >{user.name}{user.surnname}</div>
+          ) : (
+            <div></div>
+          )}
+      
+         
           </li>
           <li >
             <Link to="/playlist"  className="nav-link">
@@ -50,4 +49,19 @@ class Header extends Component {
     );
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+
+const mapDispatchToProps = (dispatch) => {
+  return { 
+    logout: () => dispatch(userActions.logout()),
+    getProfile: () => dispatch(userActions.getProfile()),
+  }
+};
+
+const mapStateToProps = (state) => {
+  console.log(state)
+  return { 
+    user: state.user,
+    authentication: state.authentication
+  }
+};
+export default withRouter(connect(mapStateToProps, mapDispatchToProps, null)(Header));

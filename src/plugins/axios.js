@@ -1,8 +1,6 @@
 
 import Axios from 'axios';
 import Cookies from 'universal-cookie';
-import {userActions} from './../modules/action';
-import  configureStore  from './../modules/store';
 const cookies = new Cookies();
 
 const axios = Axios.create({
@@ -23,7 +21,7 @@ axios.interceptors.response.use(
 
   async error => {
     if (error.response) {
-      const { status } = error.response;
+      // const { status } = error.response;
       // if (status === 401) {
       //   await configureStore.dispatch()(userActions.refresh());
       // } else if (status === 419) {

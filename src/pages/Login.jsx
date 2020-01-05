@@ -17,7 +17,6 @@ class Login extends Component {
     };
   }
     componentDidMount() {
-        console.log(this.props);
         if(cookies.get('token')){
             history.push('/playlist');
         }
@@ -62,8 +61,14 @@ class Login extends Component {
     );
   }
 }
+const mapStateToProps = (state) => {
+  console.log(state)
+  return { 
+    authentication: state.authentication
+  }
+};
 const mapDispatchToProps = dispatch => ({
   signin: userInfo => dispatch(userActions.signin(userInfo))
 })
 
-export default  withRouter(connect(null, mapDispatchToProps)(Login));
+export default  withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
