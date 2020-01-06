@@ -5,7 +5,7 @@ const cookies = new Cookies();
 export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => (
       cookies.get('token')
-            ? <Component />
+            ? <Component {...props} />
             : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
     )} />
 )

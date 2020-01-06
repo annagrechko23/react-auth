@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { Card } from "./../kit";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
-class Playlist extends Component {
+class Favourites extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -13,12 +13,12 @@ class Playlist extends Component {
   }
   render() {
     const { albums } = this.props;
-
+    const favourite = albums.albums.filter(al => al.favourite)
     return (
       <div>
-        <h1>Playlist</h1>
+        <h1>Favourites</h1>
         <div className="list-wrap" >
-          {albums.albums && albums.albums.map((a) =>
+          {albums.albums && favourite.map((a) =>
             <Card
               class={"list-element"}
               key={a.id}
@@ -40,4 +40,4 @@ const mapStateToProps = (state) => {
   };
 }
 
-export default withRouter(connect(mapStateToProps, null, null)(Playlist));
+export default withRouter(connect(mapStateToProps, null, null)(Favourites));

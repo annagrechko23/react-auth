@@ -4,13 +4,15 @@ import Button from './../kit/Button';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {userActions} from './../modules/action';
-class Login extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       email: "",
       password: "",
+      name: "",
+      surname: ""
     };
   }
   login = (event) => {
@@ -30,8 +32,22 @@ class Login extends Component {
   render() {
     return (
       <div className="login-wrapper">
-        <h1 className="login-title">Login</h1>
+        <h1 className="login-title">Profile</h1>
         <form onSubmit={ this.login }>
+       <Input
+          inputType={"text"}
+          className="wrap-input"
+          value={this.state.name}
+          placeholder={"Enter your name"}
+          handleChange={this.handleChange}
+        />
+       <Input
+          inputType={"text"}
+          className="wrap-input"
+          value={this.state.surname}
+          placeholder={"Enter your surname"}
+          handleChange={this.handleChange}
+        />
        <Input
           inputType={"email"}
           className="wrap-input"
@@ -60,4 +76,4 @@ const mapDispatchToProps = dispatch => ({
   login: userInfo => dispatch(userActions.signin(userInfo))
 })
 
-export default  withRouter(connect(null, mapDispatchToProps)(Login));
+export default  withRouter(connect(null, mapDispatchToProps)(Profile));

@@ -1,7 +1,11 @@
 
 import Axios from 'axios';
+import configureStore from "../helpers/store";
+
+import { userActions } from './../modules/action';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
+let store = configureStore()
 
 const axios = Axios.create({
   baseURL: 'http://localhost:4000/api'
@@ -13,24 +17,21 @@ axios.interceptors.request.use(
     return config;
   }
 );
-
-
 axios.interceptors.response.use(
   async response => response.data,
-
-
   async error => {
     if (error.response) {
-      // const { status } = error.response;
-      // if (status === 401) {
-      //   await configureStore.dispatch()(userActions.refresh());
-      // } else if (status === 419) {
-      //   return configureStore.dispatch()(userActions.refresh)
-      //     .then(() => axios.request(error.config));
-      // }
-    } else {
-      throw new Error(error.message || 'error.network');
-    }
+      console.log(error.response)
+      const { status } = error.response;
+      if (status === 401) {
+        // store.dispatch(userActions.logout())
+      } else if (status === 419) {
+        return store.dispatch(userActions.refresh())
+          .then(() => axios.request(error.config));
+      } else {
+        throw error.response;
+      }
+    }  throw new Error(error.message || 'error.network');
   }
 );
 export const api = {

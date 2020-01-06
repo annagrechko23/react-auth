@@ -1,67 +1,103 @@
-import React, { Component }  from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { userActions }from './../modules/action';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-
-
+import { userActions } from "./../modules/action";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { Menu, Icon } from "./../kit";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      menuOpen: false,
+      menu: [
+        {
+          title: "Favourites",
+          link: "/favourite"
+        },
+        {
+          title: "profile",
+          link: "/profile"
+        }
+      ]
+    };
+  }
   componentDidMount() {
     let { getProfile } = this.props;
     getProfile();
   }
   logout = () => {
+    this.setState({ menuOpen: false });
     let { logout } = this.props;
     logout();
+  };
+  handleMenuClick = () => {
+    this.setState({ menuOpen: true });
+  };
+
+  handleLinkClick = () => {
+    this.setState({ menuOpen: false });
   };
   render() {
     const { authentication } = this.props;
     const { user } = this.props;
+
     return (
       <div>
         <ul className="navbar-nav mr-auto">
-          <li >
-          {authentication ? (
-          <div  className="nav-link" onClick={this.logout} >Logout</div>
-          ) : (
-            <Link to="/login" className="nav-link">
-                  login
+          {!authentication ? (
+            <li>
+              <div className="nav-link">
+                <Link to="/login" className="nav-link">
+                  Login
                 </Link>
-          )}
-          </li>
-          <li>
-          {authentication ? (
-             <div  className="nav-link" >{user.name}{user.surnname}</div>
+              </div>
+            </li>
           ) : (
-            <div></div>
+            <li onClick={this.handleMenuClick}>
+              <Icon icon={faBars} color="white" />
+            </li>
           )}
-      
-         
-          </li>
-          <li >
-            <Link to="/playlist"  className="nav-link">
+          {authentication ? (
+            <li>
+              <div className="nav-link">
+                {user.name}
+                {user.surnname}
+              </div>
+            </li>
+          ) : (
+            ""
+          )}
+          <li>
+            <Link to="/playlist" className="nav-link">
               Playlist
             </Link>
           </li>
-         
         </ul>
+        <Menu
+          open={this.state.menuOpen}
+          menuItems={this.state.menu}
+          handleLinkClick={this.handleLinkClick}
+          logout={this.logout}
+        ></Menu>
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return { 
+const mapDispatchToProps = dispatch => {
+  return {
     logout: () => dispatch(userActions.logout()),
-    getProfile: () => dispatch(userActions.getProfile()),
-  }
+    getProfile: () => dispatch(userActions.getProfile())
+  };
 };
 
-const mapStateToProps = (state) => {
-  console.log(state)
-  return { 
+const mapStateToProps = state => {
+  return {
     user: state.user,
     authentication: state.authentication
-  }
+  };
 };
-export default withRouter(connect(mapStateToProps, mapDispatchToProps, null)(Header));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps, null)(Header)
+);
