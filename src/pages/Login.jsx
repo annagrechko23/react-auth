@@ -3,7 +3,7 @@ import Input from './../kit/Input';
 import Button from './../kit/Button';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {userActions} from './../modules/action';
+import { signin } from './../modules/action';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -57,7 +57,7 @@ class Login extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  login: userInfo => dispatch(userActions.signin(userInfo))
+  login: userInfo => dispatch(signin(userInfo))
 })
 
 export default  withRouter(connect(null, mapDispatchToProps)(Login));

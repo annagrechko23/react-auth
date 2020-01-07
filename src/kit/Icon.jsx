@@ -18,7 +18,7 @@ class Icon extends Component{
       },
     }
     return (
-      <span className="icon-wrap">
+      <span className="icon-wrap" >
       <FontAwesomeIcon icon={this.props.icon} style={styles.menuItem}  />
     </span>
   

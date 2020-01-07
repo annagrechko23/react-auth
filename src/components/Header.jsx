@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { userActions } from "./../modules/action";
+import { logout, getProfile } from "./../modules/action";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Menu, Icon } from "./../kit";
@@ -87,8 +87,8 @@ class Header extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    logout: () => dispatch(userActions.logout()),
-    getProfile: () => dispatch(userActions.getProfile())
+    logout: () => dispatch(logout()),
+    getProfile: () => dispatch(getProfile())
   };
 };
 

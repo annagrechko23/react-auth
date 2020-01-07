@@ -3,64 +3,61 @@ import Input from './../kit/Input';
 import Button from './../kit/Button';
 import {connect} from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import {userActions} from './../modules/action';
+import { edit } from './../modules/action';
 class Profile extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      email: "",
-      password: "",
-      name: "",
-      surname: ""
+      email:  this.props.user.email,
+      name:  this.props.user.name,
+      surnname:  this.props.user.surnname,
     };
   }
-  login = (event) => {
-    let { login } = this.props;
+  edit = (event) => {
+    let { edit } = this.props;
     event.preventDefault();
 
-    login(this.state);
+    edit(this.state);
   };
     
-  handleChange = (e) => {
-    this.setState({ email: e.target.value });
+  handleChangeEmail = (event) => {
+    event.persist();
+    this.setState(prevState => ({ email: prevState.email}));
+    console.log(event)
   }
-  handleChangePass = (e) => {
-    this.setState({ password: e.target.value });
+  handleChangeName = (e) => {
+    this.setState({ name: e.target.value });
   }
-
+  handleChangeSurname = (e) => {
+    this.setState({ surnname: e.target.value });
+  }
   render() {
+    const { user } = this.props
     return (
       <div className="login-wrapper">
-        <h1 className="login-title">Profile</h1>
-        <form onSubmit={ this.login }>
+        <h1 className="login-title">Update Profile</h1>
+        <form onSubmit={ this.edit }>
        <Input
           inputType={"text"}
           className="wrap-input"
-          value={this.state.name}
+          value={user.name}
           placeholder={"Enter your name"}
-          handleChange={this.handleChange}
+          handleChange={this.handleChangeName}
         />
        <Input
           inputType={"text"}
           className="wrap-input"
-          value={this.state.surname}
+          value={user.surnname}
           placeholder={"Enter your surname"}
-          handleChange={this.handleChange}
+          handleChange={this.handleChangeSurname}
         />
        <Input
           inputType={"email"}
           className="wrap-input"
-          value={this.state.email}
+          value={user.email}
           placeholder={"Enter your email"}
-          handleChange={this.handleChange}
-        />
-       <Input
-          inputType={"password"}
-          className="wrap submit"
-          value={this.state.password}
-          placeholder={"Enter your password"}
-          handleChange={this.handleChangePass}
+          handleChange={this.handleChangeEmail}
         />
          <Button
           type={"submit"}
@@ -73,7 +70,12 @@ class Profile extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  login: userInfo => dispatch(userActions.signin(userInfo))
+  edit: userInfo => dispatch(edit(userInfo))
 })
-
-export default  withRouter(connect(null, mapDispatchToProps)(Profile));
+const mapStateToProps = (state) => {
+  console.log(state)
+  return {
+    user: state.user
+  };
+}
+export default  withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

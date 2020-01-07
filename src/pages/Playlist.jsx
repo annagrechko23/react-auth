@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { userActions } from './../modules/action';
+import { getAlbums, checkFavourite } from './../modules/action';
 import { withRouter } from 'react-router-dom';
 import { Card } from "./../kit";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -8,9 +8,25 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 class Playlist extends Component {
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(userActions.getAlbums());
+    let { getAlbums } = this.props;
+    getAlbums();
   }
+  markFavourite = (album) => {
+    console.log(album)
+    const fav = album.favourite = !album.favourite
+    let { checkFavourite } = this.props;
+    checkFavourite({
+      author: album.author,
+				description: album.description,
+				favourite: fav,
+				id: album.id,
+				image: album.image,
+				name: album.name
+
+    });
+  };
+
+
   render() {
     const { albums } = this.props;
 
@@ -18,15 +34,17 @@ class Playlist extends Component {
       <div>
         <h1>Playlist</h1>
         <div className="list-wrap" >
-          {albums.albums && albums.albums.map((a) =>
+          {albums && albums.map((album) =>
             <Card
               class={"list-element"}
-              key={a.id}
-              title={a.name}
-              image={a.image}
-              content={a.description}
+              key={album.id}
+              title={album.name}
+              image={album.image}
+              content={album.description}
               icon={faHeart}
-              color='red'
+              color={album.favourite ? 'red' : 'gray'}
+              markFavourite={() => this.markFavourite(album)}
+
             />
           )}
         </div>
@@ -35,9 +53,16 @@ class Playlist extends Component {
   }
 }
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
-    albums: state
+    albums: state.albums
   };
 }
+const mapDispatchToProps = (dispatch) => {
+  return { 
+    getAlbums: () => dispatch(getAlbums()),
+    checkFavourite: (id, album) => dispatch(checkFavourite(id, album)),
+  }
+};
 
-export default withRouter(connect(mapStateToProps, null, null)(Playlist));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Playlist));

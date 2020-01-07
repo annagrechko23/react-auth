@@ -2,7 +2,7 @@
 import Axios from 'axios';
 import configureStore from "../helpers/store";
 
-import { userActions } from './../modules/action';
+import { refresh, logout } from './../modules/action';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 let store = configureStore()
@@ -21,17 +21,16 @@ axios.interceptors.response.use(
   async response => response.data,
   async error => {
     if (error.response) {
-      console.log(error.response)
       const { status } = error.response;
       if (status === 401) {
-        // store.dispatch(userActions.logout())
+        // store.dispatch(logout())
       } else if (status === 419) {
-        return store.dispatch(userActions.refresh())
+        return store.dispatch(refresh())
           .then(() => axios.request(error.config));
       } else {
         throw error.response;
       }
-    }  throw new Error(error.message || 'error.network');
+    } return Promise.reject(error);
   }
 );
 export const api = {

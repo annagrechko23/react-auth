@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { userActions } from './../modules/action';
+import { getAlbums } from './../modules/action';
 import { withRouter } from 'react-router-dom';
 import { Card } from "./../kit";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,7 @@ class Favourites extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch(userActions.getAlbums());
+    dispatch(getAlbums());
   }
   render() {
     const { albums } = this.props;
