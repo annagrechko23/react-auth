@@ -11,8 +11,8 @@ const axios = Axios.create({
   baseURL: 'http://localhost:4000/api'
 });
 
-axios.interceptors.request.use(
-  config => {
+ axios.interceptors.request.use(
+   config => {
     config.headers.authorization = cookies.get('token');
     return config;
   }
@@ -23,14 +23,16 @@ axios.interceptors.response.use(
     if (error.response) {
       const { status } = error.response;
       if (status === 401) {
-        // store.dispatch(logout())
+        await store.dispatch(logout())
       } else if (status === 419) {
         return store.dispatch(refresh())
-          .then(() => axios.request(error.config));
-      } else {
-        throw error.response;
-      }
-    } return Promise.reject(error);
+          .then(() => {
+           return axios.request(error.config)
+          })
+      }	
+    } else {
+      throw new Error(error.message || 'error.network');
+    }
   }
 );
 export const api = {

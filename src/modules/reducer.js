@@ -1,17 +1,19 @@
-import { LOGIN_SUCCESS, SET_LOGGED_OUT, GETALL, GET_PROFILE, CHECK_FAVOURITE, EDIT } from "./action";
+import { LOGIN_SUCCESS, SET_LOGGED_OUT, GETALL, GET_PROFILE, CHECK_FAVOURITE, EDIT, HANDLE_ON_CHANGE } from "./action";
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
-let user = cookies.get('token');
-const initialState = user !== undefined ? { authentication: true, user: {}, albums: [] } : { authentication: false, user: {}, albums: [] };
+let token = cookies.get('token');
+const initialState = { authentication: Boolean(token), user: {}, albums: [] }
 export default function (state = initialState, action) {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return { ...state, authentication: true, user: action.user };
     case SET_LOGGED_OUT:
+      token = '';
       return {
         ...state,
-        authentication: false
+        authentication: false,
       };
+      
     case GETALL:
       return {
         ...state,
@@ -22,22 +24,28 @@ export default function (state = initialState, action) {
         ...state,
         user: action.user,
       };
-      case EDIT:
-        console.log(action)
+    case EDIT:
       return {
         ...state,
         user: action.user,
       };
+    case HANDLE_ON_CHANGE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          [action.props]: action.value
+        },
+      };
     case CHECK_FAVOURITE:
       return {
         ...state,
-        albums: state.albums.map(i=> {
-          console.log(i)
-          console.log(action)
-          if(i.id === action.album.id){
+        albums: state.albums.map(i => {
+          if (i.id === action.album.id) {
             return action.album
           } return i
         })
+
       };
     default:
       return state

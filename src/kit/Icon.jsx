@@ -14,7 +14,7 @@ class Icon extends Component{
         fontSize: '24px',
         padding: '15px',
         cursor: 'pointer',
-        color: this.state.color,
+        color: this.props.color,
       },
     }
     return (

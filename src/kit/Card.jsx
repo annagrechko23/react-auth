@@ -3,7 +3,7 @@ import { Icon } from "./../kit";
 const Card = props => {
   return (
     <div className={props.class} onClick={() => props.markFavourite()}>
-      <img src={props.image} alt={props.image} />
+      <img src={props.image} alt={props.image} className="image" />
        <div>
         <h2> {props.title}</h2>
         <p> {props.content}</p>

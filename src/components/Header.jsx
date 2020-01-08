@@ -23,8 +23,11 @@ class Header extends Component {
     };
   }
   componentDidMount() {
-    let { getProfile } = this.props;
-    getProfile();
+    const { authentication } = this.props;
+    if (authentication) {
+      const { getProfile } = this.props;
+      getProfile();
+    }
   }
   logout = () => {
     this.setState({ menuOpen: false });
@@ -61,7 +64,7 @@ class Header extends Component {
           {authentication ? (
             <li>
               <div className="nav-link">
-                {user.name}
+                <span>{user.name} </span>
                 {user.surnname}
               </div>
             </li>

@@ -13,6 +13,7 @@ export const GETALL = 'GETALL';
 export const CHECK_FAVOURITE = 'CHECK_FAVOURITE';
 export const FERFESH = 'FERFESH';
 export const GET_PROFILE = 'GET_PROFILE';
+export const HANDLE_ON_CHANGE = 'HANDLE_ON_CHANGE';
 export const GETALL_FAILURE = 'GETALL_FAILURE';
 const cookies = new Cookies();
 // actions
@@ -25,93 +26,98 @@ const signinSuccess = user => {
     user
   }
 }
-export const signin = () => {
-  return dispatch => {
-    api.auth.signin()
-      .then(
-        ({ token, ...user }) => {
-          dispatch(signinSuccess(user));
-          cookies.set('token', token);
-          history.push('/playlist');
-        },
-        error => {
-          dispatch(failure(error));
-        }
-      );
+export const signin = () =>
+  async dispatch => {
+    try {
+      const { token, ...user } = await api.auth.signin()
+      dispatch(signinSuccess(user));
+      cookies.set('token', token);
+      history.push('/playlist');
+    } catch (err) {
+      dispatch(failure(err));
+    }
   };
-
-};
 const success = () => {
   return { type: FERFESH }
 }
-export const refresh = () => {
-  return dispatch => {
-    api.auth.refresh(cookies.get('token'))
-      .then(
-        token => {
-          cookies.set('token', token.token);
-          dispatch(success())
-        }
-      ).catch((err) => {
-        console.log(err);
-      })
+export const refresh = () =>
+  async dispatch => {
+    try {
+      const token = await api.auth.refresh(cookies.get('token'))
+      cookies.set('token', token.token);
+      dispatch(success())
+    } catch (err) {
+      console.log(err);
+    }
   };
-};
+export const logoutUser = () => {
+  return {
+    type: SET_LOGGED_OUT,
+    authentication: false,
+  }
+}
+export const logout = () =>
+  async dispatch => {
+    await api.auth.signout();
+    cookies.remove('token');
+    dispatch(logoutUser());
+    history.push('/login');
 
-export const logout = authentication => {
-  api.auth.signout();
-  cookies.remove('token');
-  history.push('/login');
-  return { type: SET_LOGGED_OUT, authentication }
-};
+  };
 const getAlbumsSuccess = albums => {
   return {
     type: "GETALL",
     albums
   }
 }
-export const getAlbums = () => {
-  return dispatch => {
-    api.albums.get()
-      .then((response) => {
-        console.log('response', response)
-        dispatch(getAlbumsSuccess(response));
-      }).catch((err) => {
-        console.log(err);
-      })
-  };
-}
+export const getAlbums = () =>
+  async dispatch => {
+    try {
+      const albums = await api.albums.get()
+      dispatch(getAlbumsSuccess(albums));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 const updatedFavourite = (album) => {
   return {
     type: "CHECK_FAVOURITE",
     album
   }
 }
-export const checkFavourite = (album) => {
-  console.log(album)
-  return dispatch => {
-    api.albums.put({ id: album.id, payload: album })
-      .then(() => {
-        dispatch(updatedFavourite(album));
-      })
-  }
-};
-const update = (user) =>{
-  return{
-      type: "EDIT",
-      user
+export const checkFavourite = (album) =>
+  async dispatch => {
+    try {
+      await api.albums.put({ id: album.id, payload: album })
+      dispatch(updatedFavourite(album));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+const update = (user) => {
+  return {
+    type: "EDIT",
+    user
   }
 }
-export const edit = (payload) => {
-  console.log(payload)
-  return dispatch => {
-    api.profile.put(payload)
-      .then(() => {
-        dispatch(update(payload));
-      })
+export const edit = (payload) =>
+  async dispatch => {
+    try {
+      await api.profile.put(payload)
+      dispatch(update(payload));
+      history.push('/playlist');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+const handleOnChangeProps = (props, value) => {
+  return {
+    type: "HANDLE_ON_CHANGE",
+    props: props,
+    value: value
   }
-
-};
+}
+export const onChangeProps = (props, event) => dispatch => dispatch(handleOnChangeProps(props, event.target.value));
 
 const getProfileSuccess = user => {
   return {
@@ -119,14 +125,14 @@ const getProfileSuccess = user => {
     user
   }
 }
-export const getProfile = () => {
-  return dispatch => {
-    api.profile.get()
-      .then((response) => {
-        dispatch(getProfileSuccess(response));
-      }).catch((err) => {
-        console.log(err);
-      })
-  };
-}
+export const getProfile = () =>
+
+  async dispatch => {
+    try {
+      const profile = await api.profile.get();
+      dispatch(getProfileSuccess(profile));
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
